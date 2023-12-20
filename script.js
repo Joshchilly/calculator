@@ -124,10 +124,13 @@ dotBtn.addEventListener('click', () => {
                 calcCurrent.lowerDisplay = calcCurrent.firstNum;
             } else if (!calcCurrent.operatorShowing) {
                 calcCurrent.firstNum.concat('.');
+                calcCurrent.upperDisplay = firstNum;
+                calcCurrent.lowerDisplay = firstNum;
             }
         }
         if (!calcCurrent.operatorShowing) {
             calcCurrent.dotButtonPressed = true;
         }
+        updateDisplay();
     }
 });

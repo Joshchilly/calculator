@@ -2,10 +2,8 @@ const calcCurrent = {
     firstNum: null,
     secondNum: null,
     operator: null,
-    upperDisplay: null,
-    lowerDisplay: null,
     operatorShowing: false,
-    dotButtonPressed: false
+    dotButtonPressed: false,
 };
 
 const topScreen = document.querySelector('#top-screen');
@@ -26,57 +24,86 @@ numBtns.unshift(numBtns.pop());
 const operatorBtns = document.querySelectorAll('.operation');
 
 numBtns.forEach(numBtn => numBtn.addEventListener('click', () => {
+    if (bottomScreen.textContent != null) {
+        if (bottomScreen.textContent.length === 12) {
+            return;
+        }
+    }
     if (calcCurrent.firstNum != null) {
         if (calcCurrent.operator != null) {
             calcCurrent.secondNum == null ? calcCurrent.secondNum = numBtn.textContent :
-                calcCurrent.secondNum.concat(numBtn.textContent);
-            calcCurrent.upperDisplay = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum;
+                calcCurrent.secondNum += numBtn.textContent;
+            topScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum;
+            bottomScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum;
             return;
         } else {
-            calcCurrent.firstNum.concat(numBtn.textContent);
+            calcCurrent.firstNum += numBtn.textContent;
         }
     } else {
         calcCurrent.firstNum = numBtn.textContent;
     }
     calcCurrent.operatorShowing = false;
-    calcCurrent.upperDisplay = calcCurrent.firstNum;
-    calcCurrent.lowerDisplay = calcCurrent.firstNum;
-    updateDisplay();
+    topScreen.textContent = calcCurrent.firstNum;
+    bottomScreen.textContent = calcCurrent.firstNum;
 }));
 
 operatorBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
     if (calcCurrent.secondNum == null) {
         if ((calcCurrent.firstNum != null) && (calcCurrent.operator != '=')) {
             calcCurrent.operator = opBtn.textContent;
-            calcCurrent.upperDisplay = calcCurrent.firstNum + ' ' + calcCurrent.operator;
-            calcCurrent.lowerDisplay = calcCurrent.upperDisplay;
+            topScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator;
+            bottomScreen.textContent = topScreen.textContent;
             calcCurrent.operatorShowing = true;
-            calcCurrent.dotButtonPressed = false;
         }
     } else {
-        const result = String(calcExpression(Number(calcCurrent.firstNum), Number(calcCurrent.secondNum),
-            calcCurrent.operator));
+        let result = calcExpression(Number(calcCurrent.firstNum), Number(calcCurrent.secondNum),
+            calcCurrent.operator);
+        if (result % 1 != 0) {
+            result = result.toFixed(5);
+        }
         if (opBtn = '=') {
-            calcCurrent.upperDisplay = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum +
+            topScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum +
                 ' = ' + result;
         } else {
-            calcCurrent.upperDisplay = result + ' ' + calcCurrent.operator;
+            topScreen.textContent = result + ' ' + calcCurrent.operator;
             calcCurrent.operatorShowing = true;
         }
         calcCurrent.firstNum = result;
-        calcCurrent.lowerDisplay = result;
+        bottomScreen.textContent = result;
         calcCurrent.secondNum = null;
-        calcCurrent.dotButtonPressed = false;
     }
-    updateDisplay();
+    calcCurrent.dotButtonPressed = false;
 }));
+
+dotBtn.addEventListener('click', () => {
+    if (!calcCurrent.dotButtonPressed) {
+        if (calcCurrent.secondNum != null) {
+            calcCurrent.secondNum += '.';
+            topScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum;
+            bottomScreen.textContent = calcCurrent.secondNum;
+        } else {
+            if (calcCurrent.firstNum == null) {
+                calcCurrent.firstNum = '0.';
+                topScreen.textContent = calcCurrent.firstNum;
+                bottomScreen.textContent = calcCurrent.firstNum;
+            } else if (!calcCurrent.operatorShowing) {
+                calcCurrent.firstNum += '.';
+                topScreen.textContent = firstNum;
+                bottomScreen.textContent = firstNum;
+            }
+        }
+        if (!calcCurrent.operatorShowing) {
+            calcCurrent.dotButtonPressed = true;
+        }
+    }
+});
 
 function calcExpression(a, b, operator) {
     switch (operator) {
         case '%':
             return modulo(a, b);
         case '+':
-            return modulo(a, b);
+            return add(a, b);
         case 'x':
             return multiply(a, b);
         case '÷':
@@ -105,32 +132,3 @@ function divide(a, b) {
 function subtract(a, b) {
     return a - b;
 }
-
-function updateDisplay() {
-    topScreen.textContent = calcCurrent.upperDisplay;
-    bottomScreen.textContent = calcCurrent.bottomScreen;
-}
-
-dotBtn.addEventListener('click', () => {
-    if (!calcCurrent.dotButtonPressed) {
-        if (calcCurrent.secondNum != null) {
-            calcCurrent.secondNum.concat('.');
-            calcCurrent.upperDisplay = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum;
-            calcCurrent.lowerDisplay = calcCurrent.secondNum;
-        } else {
-            if (calcCurrent.firstNum == null) {
-                calcCurrent.firstNum = '0.';
-                calcCurrent.upperDisplay = calcCurrent.firstNum;
-                calcCurrent.lowerDisplay = calcCurrent.firstNum;
-            } else if (!calcCurrent.operatorShowing) {
-                calcCurrent.firstNum.concat('.');
-                calcCurrent.upperDisplay = firstNum;
-                calcCurrent.lowerDisplay = firstNum;
-            }
-        }
-        if (!calcCurrent.operatorShowing) {
-            calcCurrent.dotButtonPressed = true;
-        }
-        updateDisplay();
-    }
-});

@@ -33,7 +33,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    background-color: rgb(74, 73, 73);
+    background-color: #4a4949;
     width: 320px;
     height: 110px;
     margin: 12px;
@@ -53,12 +53,12 @@ body {
 #top-screen {
     height: 25px;
     font-size: 20px;
-    padding-top: 12px;
+    padding-top: 15px;
     color: rgb(150, 149, 149);
 }
 
 #bottom-screen {
-    height: 50px;
+    height: 47px;
     font-size: 38px;
     color: rgb(240, 228, 228);
 }

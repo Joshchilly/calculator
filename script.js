@@ -25,6 +25,14 @@ const calcScreen = document.querySelector('#calc-screen');
 const surprise = ["Happiness can be found", "even in the darkest of times", "if only one remembers",
     "to turn on the light"];
 
+buttons.forEach(btn => btn.addEventListener('click', (e) => {
+    if (e.target.textContent != '?' && calcCurrent.surpriseIndex != 0) {
+        clearBtn.click();
+        calcCurrent.surpriseIndex = 0;
+        calcScreen.style.backgroundColor = "#4a4949";
+    }
+}));
+
 numBtns.forEach(numBtn => numBtn.addEventListener('click', () => {
     if (bottomScreen.textContent === "bruh") {
         calcCurrent.secondNum = '';
@@ -62,6 +70,9 @@ function updateDisplaySecondNum() {
 }
 
 operatorBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
+    if (calcCurrent.secondNum == null && calcCurrent.firstNum === '-') {
+        return;
+    }
     if (calcCurrent.operator === '÷' && calcCurrent.secondNum == 0) {
         bottomScreen.textContent = "bruh";
         return;
@@ -81,6 +92,7 @@ operatorBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
         }
     } else {
         calculateAndDisplay(opBtn);
+        return;
     }
     calcCurrent.decimalButtonPressed = false;
 }));
@@ -101,7 +113,7 @@ function handleMinus() {
         return 0;
     }
     return 1;
-} topScreen
+}
 
 function calculateAndDisplay(opBtn) {
     let result = calcExpression(Number(calcCurrent.firstNum), Number(calcCurrent.secondNum),
@@ -121,6 +133,10 @@ function calculateAndDisplay(opBtn) {
     calcCurrent.firstNum = result;
     bottomScreen.textContent = result;
     calcCurrent.secondNum = null;
+    calcCurrent.operator = null;
+    if (result.toString().includes('.')) {
+        calcCurrent.decimalButtonPressed = true;
+    }
 }
 
 function calcExpression(a, b, operator) {
@@ -219,11 +235,3 @@ surpriseBtn.addEventListener('click', () => {
     topScreen.textContent = surprise[calcCurrent.surpriseIndex];
     calcCurrent.surpriseIndex++;
 });
-
-buttons.forEach(btn => btn.addEventListener('click', (e) => {
-    if (e.target.textContent != '?' && calcCurrent.surpriseIndex != 0) {
-        clearBtn.click();
-        calcCurrent.surpriseIndex = 0;
-        calcScreen.style.backgroundColor = "#4a4949";
-    }
-}));

@@ -70,6 +70,7 @@ function updateDisplaySecondNum() {
 }
 
 operatorBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
+    calcCurrent.decimalButtonPressed = false;
     if (calcCurrent.secondNum == null && calcCurrent.firstNum === '-') {
         return;
     }
@@ -94,7 +95,6 @@ operatorBtns.forEach(opBtn => opBtn.addEventListener('click', () => {
         calculateAndDisplay(opBtn);
         return;
     }
-    calcCurrent.decimalButtonPressed = false;
 }));
 
 function handleMinus() {
@@ -175,6 +175,15 @@ function subtract(a, b) {
 }
 
 decimalBtn.addEventListener('click', () => {
+    if (calcCurrent.operator != null) {
+        if (calcCurrent.secondNum != null) {
+            if (!calcCurrent.secondNum.includes('.')) {
+                calcCurrent.decimalButtonPressed = false;
+            }
+        } else {
+            calcCurrent.decimalButtonPressed = false;
+        }
+    }
     if (!calcCurrent.decimalButtonPressed) {
         if (calcCurrent.secondNum != null || calcCurrent.operatorShowing) {
             if (calcCurrent.secondNum != null && calcCurrent.secondNum != '-') {

@@ -126,6 +126,7 @@ function calculateAndDisplay(opBtn) {
         }
         topScreen.textContent = calcCurrent.firstNum + ' ' + calcCurrent.operator + ' ' + calcCurrent.secondNum +
             ' = ' + result;
+        calcCurrent.operator = null;
     } else {
         calcCurrent.operator = opBtn.textContent;
         topScreen.textContent = result + ' ' + calcCurrent.operator;
@@ -133,7 +134,6 @@ function calculateAndDisplay(opBtn) {
     calcCurrent.firstNum = result;
     bottomScreen.textContent = result;
     calcCurrent.secondNum = null;
-    calcCurrent.operator = null;
     if (result.toString().includes('.')) {
         calcCurrent.decimalButtonPressed = true;
     }
